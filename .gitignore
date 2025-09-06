@@ -1,0 +1,30 @@
+# Unity - ignora pastas temporárias e builds
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Ll]ogs/
+[Mm]emoryCaptures/
+[Bb]uild/
+[Bb]uilds/
+UserSettings/
+SysInfo.txt
+
+# Visual Studio / IDE
+.vs/
+*.csproj
+*.sln
+*.user
+*.pidb
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+*.vsconfig
+
+# Plastic SCM (se estiver usando)
+.plastic/
+
+# Sistema
+.DS_Store
+Thumbs.db
