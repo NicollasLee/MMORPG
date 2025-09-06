@@ -33,3 +33,7 @@ SysInfo.txt
 # Sistema
 .DS_Store
 Thumbs.db
+*.unitypackage
+*.zip
+*.7z
+*.rar
