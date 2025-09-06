@@ -61,23 +61,68 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\6000.2.2f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Visual Design Cafe\Nature Renderer Demo\Scripts\CloneTerrain.cs" />
+    <Compile Include="Assets\Visual Design Cafe\Nature Renderer Demo\Scripts\RuntimeEditing.cs" />
     <Compile Include="Assets\Scripts\Camera\ThirdPersonCamera.cs" />
+    <Compile Include="Assets\Visual Design Cafe\Nature Renderer Demo\Scripts\OpenWebsiteButton.cs" />
+    <Compile Include="Assets\AnimeNaturalEnvironment\Scripts\Cameras\Scripts\AbstractTargetFollower.cs" />
     <Compile Include="Assets\Scripts\Termometro\ThermometerUI.cs" />
     <Compile Include="Assets\Scripts\Camera\Billboard.cs" />
+    <Compile Include="Assets\Visual Design Cafe\Nature Renderer Demo\Scripts\CompileShaders.cs" />
     <Compile Include="Assets\Scripts\Termometro\ThermoCircleUI.cs" />
+    <Compile Include="Assets\Visual Design Cafe\Nature Renderer\Runtime\NatureRenderer.SRP.cs" />
+    <Compile Include="Assets\AnimeNaturalEnvironment\Scripts\Cameras\MoveCamera.cs" />
+    <Compile Include="Assets\AnimeNaturalEnvironment\Scripts\Cameras\Scripts\FreeLookCam.cs" />
     <Compile Include="Assets\Scripts\Player\StaminaWheelUI.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
     <Compile Include="Assets\Scripts\Minimap\MinimapArrow.cs" />
+    <Compile Include="Assets\AnimeNaturalEnvironment\Scripts\RenderTextureBaker.cs" />
     <Compile Include="Assets\TriForge Assets\Fantasy Worlds - DEMO Common Files\Scripts\TF_FW_WindController.cs" />
+    <Compile Include="Assets\Visual Design Cafe\Nature Renderer Demo\Scripts\RenderPipelineLighting.cs" />
     <Compile Include="Assets\Scripts\Minimap\MinimapCamera.cs" />
     <Compile Include="Assets\Scripts\Minimap\MinimapFollow.cs" />
     <Compile Include="Assets\Scripts\Player\MoveController.cs" />
     <Compile Include="Assets\Scripts\Camera\CameraOrbit.cs" />
+    <Compile Include="Assets\AnimeNaturalEnvironment\Scripts\Cameras\Scripts\PivotBasedCameraRig.cs" />
+    <Compile Include="Assets\Visual Design Cafe\Nature Renderer Demo\Scripts\UseReferenceCamera.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\AnimeNaturalEnvironment\Shaders\ASRock.shader" />
+    <None Include="Assets\Visual Design Cafe\Nature Renderer\Plugins\VisualDesignCafe.Rendering.Nature.dll" />
+    <None Include="Assets\Visual Design Cafe\Package Manager\VisualDesignCafe.Editor.Web.dll" />
+    <None Include="Assets\Visual Design Cafe\Nature Renderer Demo\Realistic\Shaders\Lit Simple Built-in.txt" />
+    <None Include="Assets\Visual Design Cafe\Nature Renderer Demo\Realistic\Third-Party Notices.txt" />
+    <None Include="Assets\Visual Design Cafe\Nature Renderer\Resources\Nature Renderer Batcher.compute" />
+    <None Include="Assets\AnimeNaturalEnvironment\Shaders\URPToonLit.shader" />
+    <None Include="Assets\Visual Design Cafe\Package Manager\VisualDesignCafe.Packages.dll" />
+    <None Include="Assets\Visual Design Cafe\Nature Renderer\Plugins\VisualDesignCafe.Rendering.Nature.Editor.dll" />
+    <None Include="Assets\Visual Design Cafe\Nature Renderer Demo\Realistic\Shaders\Lit Simple HD.txt" />
+    <None Include="Assets\Visual Design Cafe\Nature Renderer\Plugins\VisualDesignCafe.Rendering.Instancing.Editor.dll" />
+    <None Include="Assets\AnimeNaturalEnvironment\Shaders\ASBledingGrass.shader" />
     <None Include="Assets\TriForge Assets\ReadMe.txt" />
+    <None Include="Assets\Visual Design Cafe\Package Manager\VisualDesignCafe.Editor.Community.dll" />
+    <None Include="Assets\Visual Design Cafe\Nature Renderer\Resources\Nature Renderer VR.compute" />
+    <None Include="Assets\Visual Design Cafe\Nature Renderer\Plugins\VisualDesignCafe.Memory.dll" />
+    <None Include="Assets\Visual Design Cafe\Nature Renderer Demo\Realistic\Shaders\Lit Alpha Built-in.txt" />
+    <None Include="Assets\AnimeNaturalEnvironment\Shaders\ASBledingRock.shader" />
+    <None Include="Assets\AnimeNaturalEnvironment\Scripts\Cameras\CameraGuidelines.txt" />
+    <None Include="Assets\Visual Design Cafe\Nature Renderer\Resources\Nature Renderer Instancing.compute" />
+    <None Include="Assets\Visual Design Cafe\Nature Renderer Demo\Realistic\Shaders\Lit Double-Sided Built-in.txt" />
+    <None Include="Assets\Visual Design Cafe\Nature Renderer Demo\Realistic\Shaders\Lit Alpha Universal.txt" />
+    <None Include="Assets\Visual Design Cafe\Package Manager\VisualDesignCafe.Editor.PackageManager.dll" />
+    <None Include="Assets\AnimeNaturalEnvironment\Shaders\ASFolliage.shader" />
+    <None Include="Assets\AnimeNaturalEnvironment\Shaders\BillBoardGrass.shader" />
+    <None Include="Assets\Visual Design Cafe\Nature Renderer Demo\Realistic\Shaders\Lit Double-Sided Universal.txt" />
+    <None Include="Assets\Visual Design Cafe\Nature Renderer Demo\Realistic\Shaders\Lit Double-Sided HD.txt" />
+    <None Include="Assets\Visual Design Cafe\Nature Renderer\Plugins\VisualDesignCafe.Rendering.Instancing.dll" />
+    <None Include="Assets\AnimeNaturalEnvironment\Shaders\ASFolliage Standard.shader" />
+    <None Include="Assets\Visual Design Cafe\Nature Renderer Demo\Realistic\Shaders\Lit Simple Universal.txt" />
+    <None Include="Assets\Visual Design Cafe\Package Manager\VisualDesignCafe.Editor.Events.dll" />
+    <None Include="Assets\AnimeNaturalEnvironment\Shaders\ASBledingPlant.shader" />
+    <None Include="Assets\Visual Design Cafe\Nature Renderer Demo\Realistic\Shaders\Lit Alpha HD.txt" />
     <None Include="Assets\Proxy Games\Stylized Nature Kit Lite\Scenes\Readme.txt" />
     <None Include="Assets\Shader\ToonShader.shader" />
+    <None Include="Assets\AnimeNaturalEnvironment\Shaders\ASBledingTrunk.shader" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
@@ -582,6 +627,46 @@
     </Reference>
     <Reference Include="System.Runtime.CompilerServices.Unsafe">
       <HintPath>Library\PackageCache\com.unity.collections@d49facba0036\Unity.Collections.Tests\System.Runtime.CompilerServices.Unsafe\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="VisualDesignCafe.Editor.PackageManager">
+      <HintPath>Assets\Visual Design Cafe\Package Manager\VisualDesignCafe.Editor.PackageManager.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="VisualDesignCafe.Packages">
+      <HintPath>Assets\Visual Design Cafe\Package Manager\VisualDesignCafe.Packages.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="VisualDesignCafe.Editor.Community">
+      <HintPath>Assets\Visual Design Cafe\Package Manager\VisualDesignCafe.Editor.Community.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="VisualDesignCafe.Editor.Events">
+      <HintPath>Assets\Visual Design Cafe\Package Manager\VisualDesignCafe.Editor.Events.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="VisualDesignCafe.Editor.Web">
+      <HintPath>Assets\Visual Design Cafe\Package Manager\VisualDesignCafe.Editor.Web.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="VisualDesignCafe.Rendering.Nature">
+      <HintPath>Assets\Visual Design Cafe\Nature Renderer\Plugins\VisualDesignCafe.Rendering.Nature.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="VisualDesignCafe.Memory">
+      <HintPath>Assets\Visual Design Cafe\Nature Renderer\Plugins\VisualDesignCafe.Memory.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="VisualDesignCafe.Rendering.Instancing">
+      <HintPath>Assets\Visual Design Cafe\Nature Renderer\Plugins\VisualDesignCafe.Rendering.Instancing.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="VisualDesignCafe.Rendering.Instancing.Editor">
+      <HintPath>Assets\Visual Design Cafe\Nature Renderer\Plugins\VisualDesignCafe.Rendering.Instancing.Editor.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="VisualDesignCafe.Rendering.Nature.Editor">
+      <HintPath>Assets\Visual Design Cafe\Nature Renderer\Plugins\VisualDesignCafe.Rendering.Nature.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="netstandard">
