@@ -1,4 +1,4 @@
-# Unity - ignora pastas temporárias e builds
+# Unity - caches e builds (não versionar)
 [Ll]ibrary/
 [Tt]emp/
 [Oo]bj/
@@ -11,19 +11,24 @@ SysInfo.txt
 
 # Visual Studio / IDE
 .vs/
-*.csproj
-*.sln
-*.user
 *.pidb
 *.svd
 *.pdb
 *.mdb
 *.opendb
 *.VC.db
+*.user
 *.vsconfig
 
-# Plastic SCM (se estiver usando)
+# Plastic
 .plastic/
+
+# Arquivos grandes que não são essenciais no repo (baixados à parte)
+*.hdr
+*.exr
+*.mp4
+*.mov
+*.avi
 
 # Sistema
 .DS_Store
