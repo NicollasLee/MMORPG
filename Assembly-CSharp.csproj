@@ -61,29 +61,109 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\6000.2.2f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Actions\Character\SlowTime.cs" />
+    <Compile Include="Assets\ExplosiveLLC\SuperCharacterController\Code\Core\CollisionSphere.cs" />
     <Compile Include="Assets\Visual Design Cafe\Nature Renderer Demo\Scripts\CloneTerrain.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Actions\Movement\Knockback.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Actions\Movement\Navigation.cs" />
     <Compile Include="Assets\Visual Design Cafe\Nature Renderer Demo\Scripts\RuntimeEditing.cs" />
     <Compile Include="Assets\Scripts\Camera\ThirdPersonCamera.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Lookups\WeaponGroupings.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Actions\Movement\Move.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Actions\ActionHandler.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Extensions\AnimatorExtensions.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Demo Elements\Code\NoJumpSlime.cs" />
     <Compile Include="Assets\Visual Design Cafe\Nature Renderer Demo\Scripts\OpenWebsiteButton.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Lookups\Animations\KnockdownType.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Lookups\Animations\AnimatorTrigger.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Lookups\CharacterState.cs" />
+    <Compile Include="Assets\ExplosiveLLC\SuperCharacterController\Code\Core\SuperMath.cs" />
+    <Compile Include="Assets\ExplosiveLLC\SuperCharacterController\Code\Examples\PlayerInputController.cs" />
     <Compile Include="Assets\AnimeNaturalEnvironment\Scripts\Cameras\Scripts\AbstractTargetFollower.cs" />
     <Compile Include="Assets\Scripts\Termometro\ThermometerUI.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Actions\Null.cs" />
+    <Compile Include="Assets\ExplosiveLLC\SuperCharacterController\Code\Examples\Gravity.cs" />
+    <Compile Include="Assets\ExplosiveLLC\SuperCharacterController\Code\Core\SuperGround.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Actions\Movement\GetHit.cs" />
+    <Compile Include="Assets\ExplosiveLLC\SuperCharacterController\Code\Examples\PlayerCamera.cs" />
+    <Compile Include="Assets\ExplosiveLLC\SuperCharacterController\Code\Core\SuperCollider.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\IKHands.cs" />
+    <Compile Include="Assets\ExplosiveLLC\SuperCharacterController\Code\Core\SuperStateMachine.cs" />
     <Compile Include="Assets\Scripts\Camera\Billboard.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Lookups\AnimatorWeapon.cs" />
+    <Compile Include="Assets\ExplosiveLLC\SuperCharacterController\Code\Examples\PlayerMachineDebug.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\RPGCharacterWeaponController.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Lookups\Animations\UnarmedAttack.cs" />
     <Compile Include="Assets\Visual Design Cafe\Nature Renderer Demo\Scripts\CompileShaders.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Actions\Character\Attack.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\RPGCharacterMovementController.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Actions\Movement\Knockdown.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Lookups\Weapon.cs" />
+    <Compile Include="Assets\DoubleL\Demo\DemoCameraController.cs" />
+    <Compile Include="Assets\ExplosiveLLC\SuperCharacterController\Code\Core\BSPTree.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Lookups\Animations\KnockbackType.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\RPGCharacterAnimatorEvents.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Actions\Movement\DiveRoll.cs" />
     <Compile Include="Assets\Scripts\Termometro\ThermoCircleUI.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\CoroutineQueue.cs" />
     <Compile Include="Assets\Visual Design Cafe\Nature Renderer\Runtime\NatureRenderer.SRP.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\RPGCharacterNavigationController.cs" />
+    <Compile Include="Assets\ExplosiveLLC\SuperCharacterController\Code\DebugDraw.cs" />
+    <Compile Include="Assets\Scripts\Audio\FootstepAudioEmitter.cs" />
     <Compile Include="Assets\AnimeNaturalEnvironment\Scripts\Cameras\MoveCamera.cs" />
     <Compile Include="Assets\AnimeNaturalEnvironment\Scripts\Cameras\Scripts\FreeLookCam.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\RPGCharacterController.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Lookups\AnimationParameters.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Demo Elements\Code\HighJumpTrampoline.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Lookups\Animations\TwoHandedSwordAttack.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Actions\BaseActionHandler.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Lookups\Animations\HitType.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Demo Elements\Code\NPC.cs" />
     <Compile Include="Assets\Scripts\Player\StaminaWheelUI.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Actions\Movement\Fall.cs" />
+    <Compile Include="Assets\ExplosiveLLC\SuperCharacterController\Code\Core\SuperCharacterController.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Extensions\WeaponExtensions.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Lookups\Animations\DiveRollType.cs" />
+    <Compile Include="Assets\ExplosiveLLC\SuperCharacterController\Code\Examples\PlayerMachine.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Actions\Weapon\SwitchWeapon.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\AnimationVariations.cs" />
+    <Compile Include="Assets\ExplosiveLLC\SuperCharacterController\Code\Math3d.cs" />
     <Compile Include="Assets\Scripts\Minimap\MinimapArrow.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Actions\Movement\Idle.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\AnimationData.cs" />
+    <Compile Include="Assets\Scripts\NoiseWave\NoiseMeterDriver.cs" />
+    <Compile Include="Assets\Scripts\NoiseWave\NoiseEventRelay.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Actions\SimpleActionHandler.cs" />
     <Compile Include="Assets\AnimeNaturalEnvironment\Scripts\RenderTextureBaker.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Extensions\CollectionExtensions.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Lookups\HandlerTypes.cs" />
     <Compile Include="Assets\TriForge Assets\Fantasy Worlds - DEMO Common Files\Scripts\TF_FW_WindController.cs" />
     <Compile Include="Assets\Visual Design Cafe\Nature Renderer Demo\Scripts\RenderPipelineLighting.cs" />
     <Compile Include="Assets\Scripts\Minimap\MinimapCamera.cs" />
+    <Compile Include="Assets\ExplosiveLLC\SuperCharacterController\Code\Core\IgnoredCollider.cs" />
     <Compile Include="Assets\Scripts\Minimap\MinimapFollow.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Actions\EmptyContext.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Actions\Character\AttackContext.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Demo Elements\Code\GUIControls.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Actions\InstantActionHandler.cs" />
+    <Compile Include="Assets\Scripts\Audio\PlayerNoiseEmitter.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Actions\Movement\Jump.cs" />
     <Compile Include="Assets\Scripts\Player\MoveController.cs" />
+    <Compile Include="Assets\Scripts\NoiseWave\NoiseWaveUI.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Extensions\ControllerExtensions.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\RPGCharacterInputController.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Lookups\Animations\Side.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Actions\Movement\DoubleJump.cs" />
+    <Compile Include="Assets\ExplosiveLLC\SuperCharacterController\Code\Core\SuperCollision.cs" />
+    <Compile Include="Assets\ExplosiveLLC\SuperCharacterController\Code\Core\SuperCollisionType.cs" />
+    <Compile Include="Assets\Scripts\Audio\NoiseSystem.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Actions\Movement\HitContext.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Demo Elements\Code\CameraController.cs" />
+    <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Actions\Movement\MovementActionHandler.cs" />
     <Compile Include="Assets\Scripts\Camera\CameraOrbit.cs" />
     <Compile Include="Assets\AnimeNaturalEnvironment\Scripts\Cameras\Scripts\PivotBasedCameraRig.cs" />
+    <Compile Include="Assets\ExplosiveLLC\SuperCharacterController\Code\Examples\SimpleStateMachine.cs" />
     <Compile Include="Assets\Visual Design Cafe\Nature Renderer Demo\Scripts\UseReferenceCamera.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -122,6 +202,7 @@
     <None Include="Assets\Visual Design Cafe\Nature Renderer Demo\Realistic\Shaders\Lit Alpha HD.txt" />
     <None Include="Assets\Proxy Games\Stylized Nature Kit Lite\Scenes\Readme.txt" />
     <None Include="Assets\Shader\ToonShader.shader" />
+    <None Include="Assets\ExplosiveLLC\SuperCharacterController\Code\README.txt" />
     <None Include="Assets\AnimeNaturalEnvironment\Shaders\ASBledingTrunk.shader" />
   </ItemGroup>
   <ItemGroup>
@@ -605,6 +686,14 @@
       <HintPath>C:\Program Files\Unity\Hub\Editor\6000.2.2f1\Editor\Data\Managed\UnityEngine\UnityEditor.XRModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="VisualDesignCafe.Rendering.Nature">
+      <HintPath>Assets\Visual Design Cafe\Nature Renderer\Plugins\VisualDesignCafe.Rendering.Nature.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="VisualDesignCafe.Editor.Web">
+      <HintPath>Assets\Visual Design Cafe\Package Manager\VisualDesignCafe.Editor.Web.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Unity.Collections.LowLevel.ILSupport">
       <HintPath>Library\PackageCache\com.unity.collections@d49facba0036\Unity.Collections.LowLevel.ILSupport\Unity.Collections.LowLevel.ILSupport.dll</HintPath>
       <Private>False</Private>
@@ -613,12 +702,40 @@
       <HintPath>Library\PackageCache\com.unity.ext.nunit@031a54704bff\net40\unity-custom\nunit.framework.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="VisualDesignCafe.Packages">
+      <HintPath>Assets\Visual Design Cafe\Package Manager\VisualDesignCafe.Packages.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="VisualDesignCafe.Rendering.Nature.Editor">
+      <HintPath>Assets\Visual Design Cafe\Nature Renderer\Plugins\VisualDesignCafe.Rendering.Nature.Editor.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="VisualDesignCafe.Rendering.Instancing.Editor">
+      <HintPath>Assets\Visual Design Cafe\Nature Renderer\Plugins\VisualDesignCafe.Rendering.Instancing.Editor.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="VisualDesignCafe.Editor.Community">
+      <HintPath>Assets\Visual Design Cafe\Package Manager\VisualDesignCafe.Editor.Community.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="VisualDesignCafe.Memory">
+      <HintPath>Assets\Visual Design Cafe\Nature Renderer\Plugins\VisualDesignCafe.Memory.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System.IO.Hashing">
       <HintPath>Library\PackageCache\com.unity.collections@d49facba0036\Unity.Collections.Tests\System.IO.Hashing\System.IO.Hashing.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="VisualDesignCafe.Editor.PackageManager">
+      <HintPath>Assets\Visual Design Cafe\Package Manager\VisualDesignCafe.Editor.PackageManager.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Unity.VisualScripting.Antlr3.Runtime">
       <HintPath>Library\PackageCache\com.unity.visualscripting@6279e2b7c485\Runtime\VisualScripting.Flow\Dependencies\NCalc\Unity.VisualScripting.Antlr3.Runtime.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="VisualDesignCafe.Rendering.Instancing">
+      <HintPath>Assets\Visual Design Cafe\Nature Renderer\Plugins\VisualDesignCafe.Rendering.Instancing.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Mono.Cecil">
@@ -629,44 +746,8 @@
       <HintPath>Library\PackageCache\com.unity.collections@d49facba0036\Unity.Collections.Tests\System.Runtime.CompilerServices.Unsafe\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="VisualDesignCafe.Editor.PackageManager">
-      <HintPath>Assets\Visual Design Cafe\Package Manager\VisualDesignCafe.Editor.PackageManager.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="VisualDesignCafe.Packages">
-      <HintPath>Assets\Visual Design Cafe\Package Manager\VisualDesignCafe.Packages.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="VisualDesignCafe.Editor.Community">
-      <HintPath>Assets\Visual Design Cafe\Package Manager\VisualDesignCafe.Editor.Community.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="VisualDesignCafe.Editor.Events">
       <HintPath>Assets\Visual Design Cafe\Package Manager\VisualDesignCafe.Editor.Events.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="VisualDesignCafe.Editor.Web">
-      <HintPath>Assets\Visual Design Cafe\Package Manager\VisualDesignCafe.Editor.Web.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="VisualDesignCafe.Rendering.Nature">
-      <HintPath>Assets\Visual Design Cafe\Nature Renderer\Plugins\VisualDesignCafe.Rendering.Nature.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="VisualDesignCafe.Memory">
-      <HintPath>Assets\Visual Design Cafe\Nature Renderer\Plugins\VisualDesignCafe.Memory.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="VisualDesignCafe.Rendering.Instancing">
-      <HintPath>Assets\Visual Design Cafe\Nature Renderer\Plugins\VisualDesignCafe.Rendering.Instancing.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="VisualDesignCafe.Rendering.Instancing.Editor">
-      <HintPath>Assets\Visual Design Cafe\Nature Renderer\Plugins\VisualDesignCafe.Rendering.Instancing.Editor.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="VisualDesignCafe.Rendering.Nature.Editor">
-      <HintPath>Assets\Visual Design Cafe\Nature Renderer\Plugins\VisualDesignCafe.Rendering.Nature.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="netstandard">
