@@ -1,5 +1,6 @@
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Audio;
 
 [AddComponentMenu("Audio/Footstep Audio Emitter")]
 [DisallowMultipleComponent]
@@ -14,6 +15,8 @@ public class FootstepAudioEmitter : MonoBehaviour
         [Range(0.5f, 1.5f)] public float pitchMin = 0.95f;
         [Range(0.5f, 1.5f)] public float pitchMax = 1.05f;
     }
+
+    public AudioMixerGroup outputGroup;
 
     [Header("Refs")]
     public Transform footOrigin;           // ponto no pé/centro
@@ -46,6 +49,7 @@ public class FootstepAudioEmitter : MonoBehaviour
             src.rolloffMode = AudioRolloffMode.Logarithmic;
             src.minDistance = minDistance;
             src.maxDistance = maxDistance;
+            src.outputAudioMixerGroup = outputGroup;
             pool.Enqueue(src);
         }
     }
