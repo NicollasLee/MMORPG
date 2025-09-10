@@ -63,6 +63,7 @@
   <ItemGroup>
     <Compile Include="Assets\TutorialInfo\Scripts\Editor\ReadmeEditor.cs" />
     <Compile Include="Assets\ExplosiveLLC\Editor\SetupInputLayers.cs" />
+    <Compile Include="Assets\Editor\ReverseAnimationClip.cs" />
     <Compile Include="Assets\Visual Design Cafe\Nature Renderer Demo\Scripts\Editor\DemoShaderImporter.cs" />
     <Compile Include="Assets\AnimeNaturalEnvironment\Scripts\Editor\RendeTextureEditor.cs" />
   </ItemGroup>

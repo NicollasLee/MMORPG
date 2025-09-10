@@ -74,6 +74,7 @@ public class MoveController : MonoBehaviour
     private bool pulouNesteFrame = false;
 
     public NoiseMeterDriver noise;
+    [SerializeField] private SwordEquipController sword;
 
     // Exposto para UI
     public float Stamina01 => Mathf.Approximately(staminaMax, 0f) ? 1f : Mathf.Clamp01(staminaAtual / staminaMax);
@@ -315,5 +316,13 @@ public class MoveController : MonoBehaviour
         Vector3 foot = b.center + Vector3.down * (b.extents.y - groundProbeOffset);
         float r = Mathf.Max(0.01f, groundProbeRadius * Mathf.Max(0.5f, transform.lossyScale.y));
         return Physics.CheckSphere(foot, r, groundMask, QueryTriggerInteraction.Ignore);
+    }
+
+    public void OnEquip(UnityEngine.InputSystem.InputAction.CallbackContext ctx)
+    {
+        if (ctx.performed && sword != null)
+        {
+            sword.Toggle();
+        }
     }
 }
