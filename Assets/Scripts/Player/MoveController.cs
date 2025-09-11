@@ -34,14 +34,14 @@ public class MoveController : MonoBehaviour
     public float jumpBuffer = 0.12f;        // guarda o clique antes de tocar o chão
 
     [Header("Ground Check")]
-    public LayerMask groundMask = ~0;       // selecione camadas do chão
-    public float groundProbeRadius = 0.22f; // raio da esfera
-    public float groundProbeOffset = 0.05f; // quanto acima da sola checar
+    public LayerMask groundMask = ~0;
+    public float groundProbeRadius = 0.22f;
+    public float groundProbeOffset = 0.05f;
 
     [Header("Rolagem - custo & proteção")]
     public float cooldownRoll = 0.15f;
     private float bloqueioRollAte = 0f;
-    public float custoRolagem = 20f;        // custo de stamina para rolar
+    public float custoRolagem = 20f;
 
     [Header("Stamina / Corrida")]
     public float staminaMax = 100f;
@@ -49,17 +49,20 @@ public class MoveController : MonoBehaviour
     public float regenPorSegundo = 15f;
     public float delayRegen = 0.75f;
     private float staminaAtual;
-    private float podeRegenerarApos; // relógio
-    private bool querCorrer;         // input
-    private bool correndo;           // estado
+    private float podeRegenerarApos;
+    private bool querCorrer;
+    private bool correndo;
 
     [Header("Referências (opcional)")]
     public Transform referenciaCamera;
 
-    // === Integração com Escalada (Ladder) ===
-    [Header("Integração com Escalada")]
-    [Tooltip("Quando true, o MoveController pausa totalmente (usado pela escada).")]
-    public bool suspendedByLadder = false;
+    // ==== NOVO: Queda ====
+    [Header("Animação de Queda")]
+    [SerializeField] private string trigFall = "Fall";   // Trigger que leva para o estado Fall
+    private bool fallTriggered;                           // evita spamar o Trigger
+
+    // ==== Suspensão por escada ====
+    private bool suspendedByLadder; // LadderClimber liga/desliga
 
     private CharacterController controlador;
     private Animator animador;
@@ -85,9 +88,6 @@ public class MoveController : MonoBehaviour
     public float Stamina01 => Mathf.Approximately(staminaMax, 0f) ? 1f : Mathf.Clamp01(staminaAtual / staminaMax);
     public bool Correndo => correndo;
 
-    // Acesso útil para outros scripts (ex.: LadderClimber)
-    public CharacterController Controller => controlador;
-
     void Awake()
     {
         controlador = GetComponent<CharacterController>();
@@ -97,36 +97,30 @@ public class MoveController : MonoBehaviour
         if (referenciaCamera == null && Camera.main != null)
             referenciaCamera = Camera.main.transform;
 
-        // importante para snaps suaves
         controlador.minMoveDistance = 0f;
         staminaAtual = staminaMax; // começa cheia
     }
 
-    void Update()
+    // === API p/ Ladder ===
+    public void SetSuspendedByLadder(bool on)
     {
-        float dt = Time.deltaTime;
-
-        // ========== MODO SUSPENSO (escada) ==========
-        // Não desabilitamos o CharacterController; apenas paramos toda a locomoção aqui.
-        if (suspendedByLadder)
+        suspendedByLadder = on;
+        if (on)
         {
-            // segurança: manter CC ativo e sem step para não "pular" degraus durante o climb
-            if (controlador != null && controlador.enabled)
-                controlador.stepOffset = 0f;
-
-            // reset de sinais de animação de chão/movimento do locomotor
-            animador.SetBool("NoChao", false);
-            animador.SetBool("Move", false);
-            animador.SetBool("MoveBack", false);
+            // zera parâmetros principais pra não “puxar” anima da locomotion
+            correndo = false;
+            speed01 = strafe01 = 0f;
             animador.SetBool("Run", false);
-            animador.SetBool("StrafeLeft", false);
-            animador.SetBool("StrafeRight", false);
             animador.SetFloat("Speed01", 0f);
             animador.SetFloat("Strafe01", 0f);
-
-            // sem gravidade e sem deslocamento enquanto o LadderClimber controla
-            return;
         }
+    }
+
+    void Update()
+    {
+        if (suspendedByLadder) return; // escada domina o movimento
+
+        float dt = Time.deltaTime;
 
         // ---------- Entrada normalizada ----------
         Vector3 entradaPlano = new Vector3(entrada2D.x, 0f, entrada2D.y);
@@ -143,7 +137,7 @@ public class MoveController : MonoBehaviour
 
         // ---------- corrida / velocidade efetiva ----------
         bool temMovimento = entradaPlano.sqrMagnitude > 0.0001f;
-        bool podeCorrer = temMovimento && staminaAtual > 0.01f && noChao;
+        bool podeCorrer = temMovimento && staminaAtual > 0.01f && noChao; // <- sem correr no ar
         correndo = querCorrer && podeCorrer;
 
         float velAlvo = correndo ? velocidadeCorrida : velocidade;
@@ -176,12 +170,12 @@ public class MoveController : MonoBehaviour
         if (inputFrente)
         {
             Quaternion alvo = Quaternion.LookRotation(direcaoMundo, Vector3.up);
-            transform.rotation = Quaternion.Slerp(transform.rotation, alvo, velocidadeRotacao * Time.deltaTime);
+            transform.rotation = Quaternion.Slerp(transform.rotation, alvo, velocidadeRotacao * dt);
         }
         else if (diagonalParaTras)
         {
             Quaternion alvo = Quaternion.LookRotation(-direcaoMundo, Vector3.up);
-            transform.rotation = Quaternion.Slerp(transform.rotation, alvo, velocidadeRotacao * Time.deltaTime);
+            transform.rotation = Quaternion.Slerp(transform.rotation, alvo, velocidadeRotacao * dt);
         }
 
         // ===================== GROUND / PULO =====================
@@ -223,19 +217,14 @@ public class MoveController : MonoBehaviour
         }
 
         float g = (velocidadeY > 0f) ? gravidadeSubindo : gravidadeCaindo;
-        velocidadeY += g * Time.deltaTime;
+        velocidadeY += g * dt;
         if (velocidadeY < velocidadeTerminal) velocidadeY = velocidadeTerminal;
 
-        // =================== FIM: GROUND / PULO ===================
-
         // ---------- Move ----------
-        if (controlador != null && controlador.enabled)
-        {
-            Vector3 deslocTotal = deslocPlano + Vector3.up * velocidadeY;
-            CollisionFlags flags = controlador.Move(deslocTotal * Time.deltaTime);
+        Vector3 deslocTotal = deslocPlano + Vector3.up * velocidadeY;
+        CollisionFlags flags = controlador.Move(deslocTotal * dt);
 
-            if ((flags & CollisionFlags.Below) != 0) noChao = true;
-        }
+        if ((flags & CollisionFlags.Below) != 0) noChao = true;
 
         // Aterrissagem
         if (!noChaoAnterior && noChao && !pulouNesteFrame)
@@ -246,17 +235,35 @@ public class MoveController : MonoBehaviour
 
         animador.SetBool("NoChao", noChao);
 
+        // ===================== QUEDA (sempre que estiver caindo) =====================
+        // Sem correr no ar já está garantido por 'podeCorrer && noChao'
+        if (!noChao && velocidadeY < -0.05f && !pulouNesteFrame)
+        {
+            if (!fallTriggered)
+            {
+                animador.ResetTrigger(trigFall);
+                animador.SetTrigger(trigFall); // Any State -> Fall
+                fallTriggered = true;
+                animador.SetBool("Run", false); // garante que não fique com flag de corrida
+            }
+        }
+        else
+        {
+            // reset quando voltar ao chão ou voltar a subir
+            if (noChao && fallTriggered) fallTriggered = false;
+        }
+
         // ---------- Stamina ----------
         if (correndo)
         {
-            staminaAtual -= consumoStaminaPorSegundo * Time.deltaTime;
+            staminaAtual -= consumoStaminaPorSegundo * dt;
             if (staminaAtual <= 0f) { staminaAtual = 0f; correndo = false; }
             podeRegenerarApos = Time.time + delayRegen;
         }
         else
         {
             if (Time.time >= podeRegenerarApos)
-                staminaAtual = Mathf.Min(staminaMax, staminaAtual + regenPorSegundo * Time.deltaTime);
+                staminaAtual = Mathf.Min(staminaMax, staminaAtual + regenPorSegundo * dt);
         }
 
         // ---------- Animações ----------
@@ -292,40 +299,19 @@ public class MoveController : MonoBehaviour
             podeRegenerarApos = Time.time + delayRegen;
         }
         requisitouRolagem = false;
-
-        // ===== Exemplo futuro: multiplicador por superfície =====
-        // if (noise) noise.SetExternalMultiplier(surfaceMul);
     }
 
     // ===== Input System =====
     public void OnMover(InputAction.CallbackContext ctx)
     {
-        if (suspendedByLadder)
-        {
-            entrada2D = Vector2.zero;
-            return;
-        }
-
         if (ctx.performed || ctx.started) entrada2D = ctx.ReadValue<Vector2>();
         else if (ctx.canceled) entrada2D = Vector2.zero;
     }
 
-    public void OnPular(InputAction.CallbackContext ctx)
-    {
-        if (suspendedByLadder) return;
-        if (ctx.performed) requisitouPulo = true;
-    }
-
-    public void OnRolar(InputAction.CallbackContext ctx)
-    {
-        if (suspendedByLadder) return;
-        if (ctx.performed) requisitouRolagem = true;
-    }
-
+    public void OnPular(InputAction.CallbackContext ctx) { if (ctx.performed) requisitouPulo = true; }
+    public void OnRolar(InputAction.CallbackContext ctx) { if (ctx.performed) requisitouRolagem = true; }
     public void OnCorrer(InputAction.CallbackContext ctx)
     {
-        if (suspendedByLadder) { querCorrer = false; return; }
-
         if (ctx.performed || ctx.started) querCorrer = true;
         else if (ctx.canceled) querCorrer = false;
     }
@@ -370,42 +356,11 @@ public class MoveController : MonoBehaviour
         return Physics.CheckSphere(foot, r, groundMask, QueryTriggerInteraction.Ignore);
     }
 
-    public void OnEquip(InputAction.CallbackContext ctx)
+    public void OnEquip(UnityEngine.InputSystem.InputAction.CallbackContext ctx)
     {
-        if (suspendedByLadder) return;
-
         if (ctx.performed && sword != null)
         {
             sword.Toggle();
-        }
-    }
-
-    // === API para Ladder ===
-    public void SetSuspendedByLadder(bool on)
-    {
-        suspendedByLadder = on;
-
-        if (on)
-        {
-            // zera inputs e velocidade vertical
-            entrada2D = Vector2.zero;
-            querCorrer = false;
-            correndo = false;
-            velocidadeY = 0f;
-
-            // limpa sinais visuais do locomotor
-            animador.SetFloat("Speed01", 0f);
-            animador.SetFloat("Strafe01", 0f);
-            animador.SetBool("Move", false);
-            animador.SetBool("MoveBack", false);
-            animador.SetBool("Run", false);
-            animador.SetBool("StrafeLeft", false);
-            animador.SetBool("StrafeRight", false);
-        }
-        else
-        {
-            // Ao sair da escada, voltamos a considerar o chão imediatamente
-            coyoteAte = Time.time + coyoteTime;
         }
     }
 }
