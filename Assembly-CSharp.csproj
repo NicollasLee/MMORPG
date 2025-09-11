@@ -83,6 +83,7 @@
     <Compile Include="Assets\Scripts\Termometro\ThermometerUI.cs" />
     <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Actions\Null.cs" />
     <Compile Include="Assets\ExplosiveLLC\SuperCharacterController\Code\Examples\Gravity.cs" />
+    <Compile Include="Assets\Scripts\Player\Climb\LedgeDetector.cs" />
     <Compile Include="Assets\ExplosiveLLC\SuperCharacterController\Code\Core\SuperGround.cs" />
     <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Actions\Movement\GetHit.cs" />
     <Compile Include="Assets\ExplosiveLLC\SuperCharacterController\Code\Examples\PlayerCamera.cs" />
@@ -129,6 +130,7 @@
     <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Lookups\Animations\DiveRollType.cs" />
     <Compile Include="Assets\ExplosiveLLC\SuperCharacterController\Code\Examples\PlayerMachine.cs" />
     <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Actions\Weapon\SwitchWeapon.cs" />
+    <Compile Include="Assets\Scripts\Player\Climb\LadderZone.cs" />
     <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\AnimationVariations.cs" />
     <Compile Include="Assets\ExplosiveLLC\SuperCharacterController\Code\Math3d.cs" />
     <Compile Include="Assets\Scripts\Minimap\MinimapArrow.cs" />
@@ -141,6 +143,7 @@
     <Compile Include="Assets\Scripts\Player\SwordEquipController.cs" />
     <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Extensions\CollectionExtensions.cs" />
     <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Lookups\HandlerTypes.cs" />
+    <Compile Include="Assets\Scripts\Player\Climb\ClimbController.cs" />
     <Compile Include="Assets\TriForge Assets\Fantasy Worlds - DEMO Common Files\Scripts\TF_FW_WindController.cs" />
     <Compile Include="Assets\Visual Design Cafe\Nature Renderer Demo\Scripts\RenderPipelineLighting.cs" />
     <Compile Include="Assets\Scripts\Minimap\MinimapCamera.cs" />
@@ -158,6 +161,7 @@
     <Compile Include="Assets\Kevin Iglesias\SheathScript\Scripts\SheathComponentScript.cs" />
     <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\RPGCharacterInputController.cs" />
     <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Lookups\Animations\Side.cs" />
+    <Compile Include="Assets\Scripts\Player\Climb\LadderClimber.cs" />
     <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Actions\Movement\DoubleJump.cs" />
     <Compile Include="Assets\ExplosiveLLC\SuperCharacterController\Code\Core\SuperCollision.cs" />
     <Compile Include="Assets\ExplosiveLLC\SuperCharacterController\Code\Core\SuperCollisionType.cs" />
