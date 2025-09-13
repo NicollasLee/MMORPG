@@ -82,8 +82,9 @@
     <Compile Include="Assets\AnimeNaturalEnvironment\Scripts\Cameras\Scripts\AbstractTargetFollower.cs" />
     <Compile Include="Assets\Scripts\Termometro\ThermometerUI.cs" />
     <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Actions\Null.cs" />
+    <Compile Include="Assets\Scripts\Layer\AnimUpperBodyLayerController.cs" />
     <Compile Include="Assets\ExplosiveLLC\SuperCharacterController\Code\Examples\Gravity.cs" />
-    <Compile Include="Assets\Scripts\Player\Climb\LedgeDetector.cs" />
+    <Compile Include="Assets\Scripts\Player\Climb\TraversalController.cs" />
     <Compile Include="Assets\ExplosiveLLC\SuperCharacterController\Code\Core\SuperGround.cs" />
     <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Actions\Movement\GetHit.cs" />
     <Compile Include="Assets\ExplosiveLLC\SuperCharacterController\Code\Examples\PlayerCamera.cs" />
@@ -108,6 +109,7 @@
     <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\RPGCharacterAnimatorEvents.cs" />
     <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Actions\Movement\DiveRoll.cs" />
     <Compile Include="Assets\Scripts\Termometro\ThermoCircleUI.cs" />
+    <Compile Include="Assets\Scripts\Player\WeaponEvents.cs" />
     <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\CoroutineQueue.cs" />
     <Compile Include="Assets\Visual Design Cafe\Nature Renderer\Runtime\NatureRenderer.SRP.cs" />
     <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\RPGCharacterNavigationController.cs" />
@@ -143,7 +145,6 @@
     <Compile Include="Assets\Scripts\Player\SwordEquipController.cs" />
     <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Extensions\CollectionExtensions.cs" />
     <Compile Include="Assets\ExplosiveLLC\RPG Character Mecanim Animation Pack FREE\Code\Lookups\HandlerTypes.cs" />
-    <Compile Include="Assets\Scripts\Player\Climb\ClimbController.cs" />
     <Compile Include="Assets\TriForge Assets\Fantasy Worlds - DEMO Common Files\Scripts\TF_FW_WindController.cs" />
     <Compile Include="Assets\Visual Design Cafe\Nature Renderer Demo\Scripts\RenderPipelineLighting.cs" />
     <Compile Include="Assets\Scripts\Minimap\MinimapCamera.cs" />

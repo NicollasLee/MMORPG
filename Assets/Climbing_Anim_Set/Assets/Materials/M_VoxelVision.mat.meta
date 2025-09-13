@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: d76f648b63eca2a47904ed8c3c574451
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 300872
+  packageName: Climbing Anim Set
+  packageVersion: 1.0
+  assetPath: Assets/Climbing_Anim_Set/Assets/Materials/M_VoxelVision.mat
+  uploadId: 703942

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 01543985361aadf4abcbea56e8e904f2
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 300872
+  packageName: Climbing Anim Set
+  packageVersion: 1.0
+  assetPath: Assets/Climbing_Anim_Set/Demo/Animator Controller/anim_Climb_Down_LeftController.controller
+  uploadId: 703942

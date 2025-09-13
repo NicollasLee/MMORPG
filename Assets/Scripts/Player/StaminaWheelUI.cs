@@ -20,7 +20,7 @@ public class StaminaWheelUI : MonoBehaviour
 
         barra.fillAmount = alvo.Stamina01;
 
-        bool precisaMostrar = alvo.Correndo || barra.fillAmount < 0.999f;
+        bool precisaMostrar = alvo.Running || barra.fillAmount < 0.999f;
         if (precisaMostrar) tMostrarAte = Time.time + delaySumir;
 
         float alvoAlpha = (Time.time < tMostrarAte) ? 1f : 0f;

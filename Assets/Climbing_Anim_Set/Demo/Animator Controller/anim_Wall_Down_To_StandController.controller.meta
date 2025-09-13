@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 26b2c4a49f850c44dacb3bbc2d0715ff
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 300872
+  packageName: Climbing Anim Set
+  packageVersion: 1.0
+  assetPath: Assets/Climbing_Anim_Set/Demo/Animator Controller/anim_Wall_Down_To_StandController.controller
+  uploadId: 703942

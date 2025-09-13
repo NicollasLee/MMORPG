@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 4929e262a1ae1f14da2c0da99c14eaf7
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 300872
+  packageName: Climbing Anim Set
+  packageVersion: 1.0
+  assetPath: Assets/Climbing_Anim_Set/Demo/Animator Controller/anim_Dash_UpController.controller
+  uploadId: 703942

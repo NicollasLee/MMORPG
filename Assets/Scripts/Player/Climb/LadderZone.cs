@@ -1,48 +1,84 @@
-using UnityEngine;
+Ôªøusing UnityEngine;
 
-[AddComponentMenu("Climb/Ladder Zone")]
+[AddComponentMenu("Traversal/Ladder Zone")]
+[DisallowMultipleComponent]
+[RequireComponent(typeof(BoxCollider))]
 public class LadderZone : MonoBehaviour
 {
-    [Header("Refs")]
-    public Transform bottom;
-    public Transform top;
+    [Header("Refs (auto se faltar)")]
+    [SerializeField] private Transform bottom;
+    [SerializeField] private Transform top;
 
     [Header("Snap")]
-    public float snapForward = 0.25f; // o quanto o player fica ìcoladoî na escada
+    [SerializeField, Min(0f)] private float snapForward = 0.25f; // qu√£o ‚Äúcolado‚Äù o player fica da escada
 
-    void Reset()
-    {
-        var b = new GameObject("Bottom").transform; b.SetParent(transform); b.localPosition = Vector3.zero;
-        var t = new GameObject("Top").transform; t.SetParent(transform); t.localPosition = Vector3.up * 3f;
-        bottom = b; top = t;
-
-        var box = GetComponent<BoxCollider>();
-        if (!box) box = gameObject.AddComponent<BoxCollider>();
-        box.isTrigger = true;
-    }
-
-    // direcao ìpara cimaî da escada
+    /// <summary>Dire√ß√£o "para cima" da escada (normalizada).</summary>
     public Vector3 UpDir => (top.position - bottom.position).normalized;
 
-    // normal ìde frenteî da escada (para onde o player olha).
-    // assumindo que o eixo Z+ do Ladder aponta para fora da escada:
+    /// <summary>Frente da escada (para onde o player olha). Assume Z+ apontando para fora.</summary>
     public Vector3 Front => transform.forward;
 
-    // ponto ìsnapadoî no eixo vertical da escada, clamped entre bottom e top
+    /// <summary>Altura total da escada (metros).</summary>
+    public float Height => Vector3.Distance(bottom.position, top.position);
+
+    /// <summary>Retorna ponto "snapado" ao eixo vertical da escada (t ‚àà [0..1]).</summary>
     public Vector3 GetSnapPoint(float t01, float skinForward)
     {
         t01 = Mathf.Clamp01(t01);
         Vector3 line = Vector3.Lerp(bottom.position, top.position, t01);
-        return line - Front * skinForward; // puxa para ìgrudarî na escada
+        return line - Front * skinForward;
     }
 
-    public float Height => Vector3.Distance(bottom.position, top.position);
-
-    // converte posiÁ„o do player para t em [0..1] ao longo da escada
+    /// <summary>Converte posi√ß√£o no mundo para t ‚àà [0..1] ao longo da escada.</summary>
     public float WorldToT(Vector3 worldPos)
     {
-        var v = worldPos - bottom.position;
+        Vector3 v = worldPos - bottom.position;
         float along = Vector3.Dot(v, UpDir);
         return Mathf.InverseLerp(0f, Height, along);
+    }
+
+    /// <summary>Garante filhos Bottom/Top e BoxCollider como trigger.</summary>
+    private void Reset()
+    {
+        if (!bottom)
+        {
+            var b = new GameObject("Bottom").transform;
+            b.SetParent(transform); b.localPosition = Vector3.zero;
+            bottom = b;
+        }
+        if (!top)
+        {
+            var t = new GameObject("Top").transform;
+            t.SetParent(transform); t.localPosition = Vector3.up * 3f;
+            top = t;
+        }
+
+        var box = GetComponent<BoxCollider>();
+        box.isTrigger = true;
+    }
+
+    /// <summary>Valida refer√™ncias e impede Bottom/Top no mesmo ponto.</summary>
+    private void OnValidate()
+    {
+        var box = GetComponent<BoxCollider>();
+        if (box) box.isTrigger = true;
+
+        if (bottom == null || top == null) return;
+        if (Vector3.Distance(bottom.position, top.position) < 0.001f)
+            top.position = bottom.position + Vector3.up * 0.1f;
+        if (snapForward < 0f) snapForward = 0f;
+    }
+
+    /// <summary>Desenha gizmos de ajuda no editor.</summary>
+    private void OnDrawGizmos()
+    {
+        if (!bottom || !top) return;
+
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine(bottom.position, top.position);
+
+        Gizmos.color = Color.cyan;
+        Vector3 mid = Vector3.Lerp(bottom.position, top.position, 0.5f);
+        Gizmos.DrawRay(mid, Front * 0.5f);
     }
 }

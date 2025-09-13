@@ -9,358 +9,434 @@ public class MoveController : MonoBehaviour
 {
     private enum RollDir { Front = 0, Back = 1, Left = 2, Right = 3 }
 
-    private float speed01;        // 0..1 (parado→corrida)
-    private float speed01Vel;     // ref p/ SmoothDamp
-    private float strafe01;       // 0..1 (parado→strafe rápido)
-    private float strafe01Vel;
+    // ===== Config =====
+    [Header("Locomotion (BlendTree MoveX/MoveY)")]
+    [SerializeField] private float locomotionDamp = 0.08f; // damping do BT
+    [SerializeField] private float runBoost = 1.4f;        // escala Y quando correndo
 
-    [Header("Movimento Básico")]
-    public float velocidade = 5f;
-    public float velocidadeCorrida = 8f; // corrida
-    public float velocidadeRotacao = 12f;
+    [Header("Movement")]
+    [SerializeField] private float walkSpeed = 5f;
+    [SerializeField] private float runSpeed = 8f;
+    [SerializeField] private float rotationSpeed = 12f;
 
-    [Header("Pulo")]
-    public float alturaPulo = 1.2f;
+    [Header("Jump")]
+    [SerializeField] private float jumpHeight = 1.2f;
+    [SerializeField] private float gravityUp = -22f;
+    [SerializeField] private float gravityDown = -36f;
+    [SerializeField] private float terminalVelocity = -55f;
 
-    // Gravidade “boa de jogar”
-    public float gravidadeSubindo = -22f;   // quando vY > 0
-    public float gravidadeCaindo = -36f;    // quando vY <= 0
-    public float velocidadeTerminal = -55f; // limite de queda
-
-    [Header("Proteções de Pulo")]
-    public float cooldownPulo = 0.06f;
-    public float cooldownAoPousar = 0.05f;
-    public float coyoteTime = 0.12f;        // perdão ao sair da borda
-    public float jumpBuffer = 0.12f;        // guarda o clique antes de tocar o chão
+    [Header("Jump Safeguards")]
+    [SerializeField] private float jumpCooldown = 0.06f;
+    [SerializeField] private float landedCooldown = 0.05f;
+    [SerializeField] private float coyoteTime = 0.12f;
+    [SerializeField] private float jumpBufferTime = 0.12f;
 
     [Header("Ground Check")]
-    public LayerMask groundMask = ~0;
-    public float groundProbeRadius = 0.22f;
-    public float groundProbeOffset = 0.05f;
+    [SerializeField] private LayerMask groundMask = ~0;
+    [SerializeField] private float groundProbeRadius = 0.22f;
+    [SerializeField] private float groundProbeOffset = 0.05f;
 
-    [Header("Rolagem - custo & proteção")]
-    public float cooldownRoll = 0.15f;
-    private float bloqueioRollAte = 0f;
-    public float custoRolagem = 20f;
+    [Header("Roll")]
+    [SerializeField] private float rollCooldown = 0.15f;
+    [SerializeField] private float rollStaminaCost = 20f;
 
-    [Header("Stamina / Corrida")]
-    public float staminaMax = 100f;
-    public float consumoStaminaPorSegundo = 25f;
-    public float regenPorSegundo = 15f;
-    public float delayRegen = 0.75f;
-    private float staminaAtual;
-    private float podeRegenerarApos;
-    private bool querCorrer;
-    private bool correndo;
+    [Header("Stamina / Run")]
+    [SerializeField] private float staminaMax = 100f;
+    [SerializeField] private float staminaDrainPerSec = 25f;
+    [SerializeField] private float staminaRegenPerSec = 15f;
+    [SerializeField] private float staminaRegenDelay = 0.75f;
 
-    [Header("Referências (opcional)")]
-    public Transform referenciaCamera;
-
-    // ==== NOVO: Queda ====
-    [Header("Animação de Queda")]
-    [SerializeField] private string trigFall = "Fall";   // Trigger que leva para o estado Fall
-    private bool fallTriggered;                           // evita spamar o Trigger
-
-    // ==== Suspensão por escada ====
-    private bool suspendedByLadder; // LadderClimber liga/desliga
-
-    private CharacterController controlador;
-    private Animator animador;
-
-    private Vector2 entrada2D;
-    private bool requisitouPulo;
-    private bool requisitouRolagem;
-
-    private float velocidadeY;
-    private bool noChao;
-    private bool noChaoAnterior;
-
-    // buffers/estados de pulo
-    private float bloqueioPuloAte = 0f;
-    private float coyoteAte = 0f;
-    private float jumpBufferAte = 0f;
-    private bool pulouNesteFrame = false;
-
-    public NoiseMeterDriver noise;
+    [Header("Optional Refs")]
+    [SerializeField] private Transform cameraRef;
+    [SerializeField] private string fallTrigger = "Fall";
     [SerializeField] private SwordEquipController sword;
 
-    // Exposto para UI
-    public float Stamina01 => Mathf.Approximately(staminaMax, 0f) ? 1f : Mathf.Clamp01(staminaAtual / staminaMax);
-    public bool Correndo => correndo;
+    // ===== Runtime =====
+    private CharacterController cc;
+    private Animator animator;
+    private NoiseMeterDriver noise;
 
-    void Awake()
+    private Vector2 moveInput;
+    private bool requestJump;
+    private bool requestRoll;
+    private bool wantRun;
+    private bool running;
+
+    private float stamina;
+    private float regenAllowedAt;
+
+    private float yVelocity;
+    private bool grounded;
+    private bool groundedLastFrame;
+    private bool fallTriggered;
+    private bool suspendedByLadder;
+
+    private float blockRollUntil;
+
+    // buffers pulo
+    private float blockJumpUntil;
+    private float coyoteUntil;
+    private float bufferJumpUntil;
+    private bool jumpedThisFrame;
+
+    // impulso externo (1 frame) p/ dash/pulo na parede
+    private Vector3 externalPlanarImpulse;
+
+    // UI exposure
+    public float Stamina01 => Mathf.Approximately(staminaMax, 0f) ? 1f : Mathf.Clamp01(stamina / staminaMax);
+    public bool Running => running;
+    public bool IsGrounded => grounded;
+
+    private void Reset()
     {
-        controlador = GetComponent<CharacterController>();
-        animador = GetComponent<Animator>();
-        noise = noise ? noise : GetComponent<NoiseMeterDriver>();
-
-        if (referenciaCamera == null && Camera.main != null)
-            referenciaCamera = Camera.main.transform;
-
-        controlador.minMoveDistance = 0f;
-        staminaAtual = staminaMax; // começa cheia
+        cameraRef = Camera.main ? Camera.main.transform : null;
     }
 
-    // === API p/ Ladder ===
-    public void SetSuspendedByLadder(bool on)
+    /// <summary>Inicializa componentes e estado.</summary>
+    private void Awake()
     {
-        suspendedByLadder = on;
-        if (on)
-        {
-            // zera parâmetros principais pra não “puxar” anima da locomotion
-            correndo = false;
-            speed01 = strafe01 = 0f;
-            animador.SetBool("Run", false);
-            animador.SetFloat("Speed01", 0f);
-            animador.SetFloat("Strafe01", 0f);
-        }
+        cc = GetComponent<CharacterController>();
+        animator = GetComponent<Animator>();
+        noise = GetComponent<NoiseMeterDriver>() ?? noise;
+
+        if (cameraRef == null && Camera.main != null) cameraRef = Camera.main.transform;
+        cc.minMoveDistance = 0f;
+        stamina = staminaMax;
     }
 
-    void Update()
+    /// <summary>Loop principal de movimento.</summary>
+    private void Update()
     {
-        if (suspendedByLadder) return; // escada domina o movimento
+        if (cc == null || !cc.enabled) return;
+        if (suspendedByLadder) return;
 
         float dt = Time.deltaTime;
 
-        // ---------- Entrada normalizada ----------
-        Vector3 entradaPlano = new Vector3(entrada2D.x, 0f, entrada2D.y);
-        if (entradaPlano.sqrMagnitude > 1f) entradaPlano.Normalize();
+        // 1) Direção no mundo a partir do input + câmera
+        Vector3 worldDir = BuildWorldMoveDirection(moveInput);
 
-        // ---------- Direção relativa à câmera ----------
-        Vector3 frente = Vector3.forward, direita = Vector3.right;
-        if (referenciaCamera != null)
-        {
-            frente = referenciaCamera.forward; frente.y = 0f; frente.Normalize();
-            direita = referenciaCamera.right; direita.y = 0f; direita.Normalize();
-        }
-        Vector3 direcaoMundo = frente * entradaPlano.z + direita * entradaPlano.x;
+        // 2) Corrida (só no chão e com stamina)
+        UpdateRunState(worldDir);
 
-        // ---------- corrida / velocidade efetiva ----------
-        bool temMovimento = entradaPlano.sqrMagnitude > 0.0001f;
-        bool podeCorrer = temMovimento && staminaAtual > 0.01f && noChao; // <- sem correr no ar
-        correndo = querCorrer && podeCorrer;
+        // 3) Alimenta BlendTree 2D (MoveX/MoveY)
+        UpdateBlendTree(worldDir, dt);
 
-        float velAlvo = correndo ? velocidadeCorrida : velocidade;
-        Vector3 deslocPlano = direcaoMundo * velAlvo;
+        // 4) Rotação de acordo com a direção
+        RotateCharacter(worldDir, dt);
 
-        float alvoSpeed01 = Mathf.Clamp01(direcaoMundo.magnitude) * (correndo ? 1f : 0.6f);
-        float alvoStrafe01 = Mathf.Clamp01(Mathf.Abs(entradaPlano.x)); // só lateral
+        // 5) Grounding & Pulo
+        UpdateGrounding();
+        BufferJumpInput();
+        TryJumpIfAllowed();
 
-        speed01 = Mathf.SmoothDamp(speed01, alvoSpeed01, ref speed01Vel, 0.08f);
-        strafe01 = Mathf.SmoothDamp(strafe01, alvoStrafe01, ref strafe01Vel, 0.08f);
+        // 6) Gravidade
+        ApplyGravity(dt);
 
-        animador.SetFloat("Speed01", speed01);
-        animador.SetFloat("Strafe01", strafe01);
+        // 7) Move (inclui impulso planar externo – dash/pulo parede)
+        MoveCharacter(worldDir, dt);
 
-        // ---------- Sinais p/ animação ----------
-        float dotFrente = 0f;
-        if (direcaoMundo.sqrMagnitude > 0.0001f)
-            dotFrente = Vector3.Dot(direcaoMundo.normalized, transform.forward);
+        // 8) Aterrissagem / Fall
+        HandleLandingEffects();
+        UpdateFallTrigger();
 
-        bool movendoFrente = direcaoMundo.sqrMagnitude > 0.0001f && dotFrente > 0.25f;
-        bool movendoTras = direcaoMundo.sqrMagnitude > 0.0001f && dotFrente < -0.25f;
+        // 9) Stamina e anima flags auxiliares
+        UpdateStamina(dt);
+        PushAnimatorFlags(worldDir);
 
-        bool strafeLeft = Mathf.Abs(entradaPlano.z) <= 0.25f && entradaPlano.x < -0.10f;
-        bool strafeRight = Mathf.Abs(entradaPlano.z) <= 0.25f && entradaPlano.x > 0.10f;
+        // 10) Roll
+        HandleRoll(worldDir);
+        requestRoll = false;
+    }
 
-        // ---------- Rotação ----------
-        bool inputFrente = entradaPlano.z > 0.10f;
-        bool diagonalParaTras = entradaPlano.z < -0.10f && Mathf.Abs(entradaPlano.x) > 0.10f;
+    // ====== API externa ======
 
-        if (inputFrente)
-        {
-            Quaternion alvo = Quaternion.LookRotation(direcaoMundo, Vector3.up);
-            transform.rotation = Quaternion.Slerp(transform.rotation, alvo, velocidadeRotacao * dt);
-        }
-        else if (diagonalParaTras)
-        {
-            Quaternion alvo = Quaternion.LookRotation(-direcaoMundo, Vector3.up);
-            transform.rotation = Quaternion.Slerp(transform.rotation, alvo, velocidadeRotacao * dt);
-        }
+    /// <summary>Suspende a locomoção (ex.: quando escada domina o movimento).</summary>
+    public void SetSuspendedByLadder(bool enabled)
+    {
+        suspendedByLadder = enabled;
+        if (!enabled) return;
 
-        // ===================== GROUND / PULO =====================
-        noChaoAnterior = noChao;
+        running = false;
+        animator.SetBool("Run", false);
+        animator.SetFloat("MoveX", 0f);
+        animator.SetFloat("MoveY", 0f);
+    }
+
+    /// <summary>Aplica um impulso horizontal (plano XZ) consumido no próximo Move().</summary>
+    public void ApplyPlanarImpulse(Vector3 impulse)
+    {
+        impulse.y = 0f;
+        externalPlanarImpulse += impulse;
+    }
+
+    /// <summary>Adiciona velocidade vertical (usado por JumpOut/DashUp).</summary>
+    public void AddVerticalVelocity(float addY)
+    {
+        yVelocity = Mathf.Max(yVelocity, addY);
+    }
+
+    // ====== Input System (encaminhados pelo TraversalController) ======
+
+    /// <summary>Entrada de movimento (Vector2).</summary>
+    public void OnMove(InputAction.CallbackContext ctx)
+    {
+        if (ctx.performed || ctx.started) moveInput = ctx.ReadValue<Vector2>();
+        else if (ctx.canceled) moveInput = Vector2.zero;
+    }
+
+    /// <summary>Entrada de pulo.</summary>
+    public void OnJump(InputAction.CallbackContext ctx)
+    {
+        if (ctx.performed) requestJump = true;
+    }
+
+    /// <summary>Entrada de rolagem.</summary>
+    public void OnRoll(InputAction.CallbackContext ctx)
+    {
+        if (ctx.performed) requestRoll = true;
+    }
+
+    /// <summary>Entrada de corrida (hold).</summary>
+    public void OnRun(InputAction.CallbackContext ctx)
+    {
+        if (ctx.performed || ctx.started) wantRun = true;
+        else if (ctx.canceled) wantRun = false;
+    }
+
+    /// <summary>Equipar/Guardar arma e entrar na submáquina UpperBody.</summary>
+    public void OnEquip(InputAction.CallbackContext ctx)
+    {
+        if (!ctx.performed || animator == null) return;
+
+        bool armed = !animator.GetBool("Armed");
+        animator.SetBool("Armed", armed);
+        animator.ResetTrigger("Equip");
+        animator.SetTrigger("Equip");
+    }
+
+    // ====== Núcleo ======
+
+    /// <summary>Constroi direção de movimento no mundo a partir do input e da câmera.</summary>
+    private Vector3 BuildWorldMoveDirection(Vector2 input)
+    {
+        Vector3 v = new Vector3(input.x, 0f, input.y);
+        if (v.sqrMagnitude > 1f) v.Normalize();
+
+        if (cameraRef == null) return v;
+        Vector3 fwd = cameraRef.forward; fwd.y = 0f; fwd.Normalize();
+        Vector3 right = cameraRef.right; right.y = 0f; right.Normalize();
+        return fwd * v.z + right * v.x;
+    }
+
+    /// <summary>Atualiza o estado de corrida.</summary>
+    private void UpdateRunState(Vector3 worldDir)
+    {
+        bool hasInput = worldDir.sqrMagnitude > 0.0001f;
+        bool canRun = hasInput && stamina > 0.01f && grounded;
+        running = wantRun && canRun;
+    }
+
+    /// <summary>Alimenta o BlendTree 2D MoveX/MoveY (local space + intensidade).</summary>
+    private void UpdateBlendTree(Vector3 worldDir, float dt)
+    {
+        float mag = Mathf.Clamp01(worldDir.magnitude);
+        float intensity = running ? mag * runBoost : mag;
+
+        Vector3 local = transform.InverseTransformDirection(worldDir.normalized * (mag > 0f ? 1f : 0f));
+        float targetX = local.x * intensity; // strafe
+        float targetY = local.z * intensity; // frente/trás (+ corrida)
+
+        animator.SetFloat("MoveX", targetX, locomotionDamp, dt);
+        animator.SetFloat("MoveY", targetY, locomotionDamp, dt);
+    }
+
+    /// <summary>Rotaciona suavemente para a direção de movimento.</summary>
+    private void RotateCharacter(Vector3 worldDir, float dt)
+    {
+        if (worldDir.sqrMagnitude <= 0.0001f) return;
+
+        Quaternion target = Quaternion.LookRotation(worldDir, Vector3.up);
+        transform.rotation = Quaternion.Slerp(transform.rotation, target, rotationSpeed * dt);
+    }
+
+    /// <summary>Atualiza contato com o chão e coyote.</summary>
+    private void UpdateGrounding()
+    {
+        groundedLastFrame = grounded;
+
         bool probe = ProbeGround();
-        bool ccGrounded = controlador.isGrounded;
-        noChao = probe || ccGrounded;
+        bool ccGround = cc.isGrounded;
+        grounded = probe || ccGround;
 
-        controlador.stepOffset = noChao ? 0.35f : 0f;
+        cc.stepOffset = grounded ? 0.35f : 0f;
 
-        if (noChao)
+        if (grounded)
         {
-            if (velocidadeY < 0f) velocidadeY = -2f;
-            coyoteAte = Time.time + coyoteTime;
+            if (yVelocity < 0f) yVelocity = -2f;
+            coyoteUntil = Time.time + coyoteTime;
         }
+    }
 
-        if (requisitouPulo)
-        {
-            jumpBufferAte = Time.time + jumpBuffer;
-            requisitouPulo = false;
-        }
+    /// <summary>Observa a flag de input de pulo para buffer.</summary>
+    private void BufferJumpInput()
+    {
+        if (!requestJump) return;
+        bufferJumpUntil = Time.time + jumpBufferTime;
+        requestJump = false;
+    }
 
-        pulouNesteFrame = false;
-        bool podeAcionarPulo = Time.time >= bloqueioPuloAte;
-        bool dentroDoBuffer = Time.time <= jumpBufferAte;
-        bool dentroDoCoyote = Time.time <= coyoteAte;
+    /// <summary>Tenta pular quando dentro de janela de coyote + buffer + cooldown.</summary>
+    private void TryJumpIfAllowed()
+    {
+        jumpedThisFrame = false;
 
-        if (dentroDoBuffer && dentroDoCoyote && !animador.IsInTransition(0) && podeAcionarPulo)
-        {
-            velocidadeY = Mathf.Sqrt(2f * -gravidadeSubindo * Mathf.Max(0.01f, alturaPulo));
-            animador.ResetTrigger("Jump");
-            animador.SetTrigger("Jump");
-            bloqueioPuloAte = Time.time + cooldownPulo;
-            jumpBufferAte = 0f;
-            pulouNesteFrame = true;
-            noChao = false;
+        bool canByTime = Time.time >= blockJumpUntil;
+        bool inBuffer = Time.time <= bufferJumpUntil;
+        bool inCoyote = Time.time <= coyoteUntil;
 
-            if (noise) noise.Jump();
-        }
+        if (!inBuffer || !inCoyote || !canByTime || animator.IsInTransition(0)) return;
 
-        float g = (velocidadeY > 0f) ? gravidadeSubindo : gravidadeCaindo;
-        velocidadeY += g * dt;
-        if (velocidadeY < velocidadeTerminal) velocidadeY = velocidadeTerminal;
+        yVelocity = Mathf.Sqrt(2f * -gravityUp * Mathf.Max(0.01f, jumpHeight));
+        animator.ResetTrigger("Jump");
+        animator.SetTrigger("Jump");
 
-        // ---------- Move ----------
-        Vector3 deslocTotal = deslocPlano + Vector3.up * velocidadeY;
-        CollisionFlags flags = controlador.Move(deslocTotal * dt);
+        blockJumpUntil = Time.time + jumpCooldown;
+        bufferJumpUntil = 0f;
+        jumpedThisFrame = true;
+        grounded = false;
 
-        if ((flags & CollisionFlags.Below) != 0) noChao = true;
+        if (noise) noise.Jump();
+    }
 
-        // Aterrissagem
-        if (!noChaoAnterior && noChao && !pulouNesteFrame)
-        {
-            if (noise) noise.Land();
-            bloqueioPuloAte = Time.time + Mathf.Max(cooldownPulo, cooldownAoPousar);
-        }
+    /// <summary>Aplica gravidade parabólica com terminal velocity.</summary>
+    private void ApplyGravity(float dt)
+    {
+        float g = (yVelocity > 0f) ? gravityUp : gravityDown;
+        yVelocity += g * dt;
+        if (yVelocity < terminalVelocity) yVelocity = terminalVelocity;
+    }
+    /// <summary>Move o CharacterController (inclui impulso externo 1-frame).</summary>
+    private void MoveCharacter(Vector3 worldDir, float dt)
+    {
+        if (cc == null || !cc.enabled) return;
 
-        animador.SetBool("NoChao", noChao);
+        float speed = running ? runSpeed : walkSpeed;
+        Vector3 planar = worldDir * speed;
 
-        // ===================== QUEDA (sempre que estiver caindo) =====================
-        // Sem correr no ar já está garantido por 'podeCorrer && noChao'
-        if (!noChao && velocidadeY < -0.05f && !pulouNesteFrame)
+        Vector3 deslocTotal = planar + externalPlanarImpulse + Vector3.up * yVelocity;
+        externalPlanarImpulse = Vector3.zero; // consome o impulso
+
+        // segurança: se CC foi desativado no meio do caminho, não chame Move
+        if (!cc.enabled) return;
+
+        var flags = cc.Move(deslocTotal * dt);
+        if ((flags & CollisionFlags.Below) != 0) grounded = true;
+
+        animator.SetBool("NoChao", grounded);
+    }
+
+    /// <summary>Trata aterrissagem (sons/bloqueios).</summary>
+    private void HandleLandingEffects()
+    {
+        if (groundedLastFrame || !grounded || jumpedThisFrame) return;
+
+        if (noise) noise.Land();
+        blockJumpUntil = Time.time + Mathf.Max(jumpCooldown, landedCooldown);
+    }
+
+    /// <summary>Dispara trigger de queda ao cair.</summary>
+    private void UpdateFallTrigger()
+    {
+        if (!grounded && yVelocity < -0.05f && !jumpedThisFrame)
         {
             if (!fallTriggered)
             {
-                animador.ResetTrigger(trigFall);
-                animador.SetTrigger(trigFall); // Any State -> Fall
+                animator.ResetTrigger(fallTrigger);
+                animator.SetTrigger(fallTrigger);
                 fallTriggered = true;
-                animador.SetBool("Run", false); // garante que não fique com flag de corrida
+                animator.SetBool("Run", false);
             }
         }
         else
         {
-            // reset quando voltar ao chão ou voltar a subir
-            if (noChao && fallTriggered) fallTriggered = false;
+            if (grounded && fallTriggered) fallTriggered = false;
         }
+    }
 
-        // ---------- Stamina ----------
-        if (correndo)
+    /// <summary>Consome/Regenera stamina (com delay).</summary>
+    private void UpdateStamina(float dt)
+    {
+        if (running)
         {
-            staminaAtual -= consumoStaminaPorSegundo * dt;
-            if (staminaAtual <= 0f) { staminaAtual = 0f; correndo = false; }
-            podeRegenerarApos = Time.time + delayRegen;
-        }
-        else
-        {
-            if (Time.time >= podeRegenerarApos)
-                staminaAtual = Mathf.Min(staminaMax, staminaAtual + regenPorSegundo * dt);
+            stamina -= staminaDrainPerSec * dt;
+            if (stamina <= 0f) { stamina = 0f; running = false; }
+            regenAllowedAt = Time.time + staminaRegenDelay;
+            return;
         }
 
-        // ---------- Animações ----------
-        animador.SetBool("Move", movendoFrente);
-        animador.SetBool("MoveBack", movendoTras);
-        animador.SetBool("Run", correndo);
-        animador.SetBool("StrafeLeft", strafeLeft);
-        animador.SetBool("StrafeRight", strafeRight);
-
-        // ---------- Rolagem ----------
-        bool emRolagem = EstaEmRolagem();
-        bool podeRolar =
-            Time.time >= bloqueioRollAte &&
-            !emRolagem &&
-            !animador.IsInTransition(0) &&
-            noChao &&
-            staminaAtual >= custoRolagem;
-
-        if (requisitouRolagem && podeRolar)
-        {
-            staminaAtual -= custoRolagem;
-            if (staminaAtual < 0f) staminaAtual = 0f;
-
-            RollDir dir = ClassificarDirecaoDeRoll(direcaoMundo);
-            animador.SetInteger("RollDir", (int)dir);
-
-            animador.ResetTrigger("Roll");
-            animador.SetTrigger("Roll");
-
-            if (noise) noise.Roll();
-
-            bloqueioRollAte = Time.time + cooldownRoll;
-            podeRegenerarApos = Time.time + delayRegen;
-        }
-        requisitouRolagem = false;
+        if (Time.time < regenAllowedAt) return;
+        stamina = Mathf.Min(staminaMax, stamina + staminaRegenPerSec * dt);
     }
 
-    // ===== Input System =====
-    public void OnMover(InputAction.CallbackContext ctx)
+    /// <summary>Flags auxiliares (opcionais para clipes legados).</summary>
+    private void PushAnimatorFlags(Vector3 worldDir)
     {
-        if (ctx.performed || ctx.started) entrada2D = ctx.ReadValue<Vector2>();
-        else if (ctx.canceled) entrada2D = Vector2.zero;
+        float dotForward = (worldDir.sqrMagnitude > 0.0001f)
+            ? Vector3.Dot(worldDir.normalized, transform.forward)
+            : 0f;
+
+        bool movingFwd = worldDir.sqrMagnitude > 0.0001f && dotForward > 0.25f;
+        bool movingBack = worldDir.sqrMagnitude > 0.0001f && dotForward < -0.25f;
+
+        animator.SetBool("Move", movingFwd);
+        animator.SetBool("MoveBack", movingBack);
+        animator.SetBool("Run", running);
     }
 
-    public void OnPular(InputAction.CallbackContext ctx) { if (ctx.performed) requisitouPulo = true; }
-    public void OnRolar(InputAction.CallbackContext ctx) { if (ctx.performed) requisitouRolagem = true; }
-    public void OnCorrer(InputAction.CallbackContext ctx)
+    /// <summary>Executa rolagem se apto.</summary>
+    private void HandleRoll(Vector3 worldDir)
     {
-        if (ctx.performed || ctx.started) querCorrer = true;
-        else if (ctx.canceled) querCorrer = false;
+        if (!requestRoll) return;
+
+        bool canRoll = Time.time >= blockRollUntil &&
+                       grounded &&
+                       !animator.IsInTransition(0) &&
+                       stamina >= rollStaminaCost;
+
+        if (!canRoll) return;
+
+        stamina -= rollStaminaCost;
+        if (stamina < 0f) stamina = 0f;
+
+        RollDir dir = ClassifyRollDirection(worldDir);
+        animator.SetInteger("RollDir", (int)dir);
+        animator.ResetTrigger("Roll");
+        animator.SetTrigger("Roll");
+
+        if (noise) noise.Roll();
+
+        blockRollUntil = Time.time + rollCooldown;
+        regenAllowedAt = Time.time + 0.5f;
     }
 
-    private bool EstaEmRolagem()
+    /// <summary>Classifica direção da rolagem baseada no input local.</summary>
+    private RollDir ClassifyRollDirection(Vector3 worldDir)
     {
-        var s0 = animador.GetCurrentAnimatorStateInfo(0);
-        var s1 = animador.GetNextAnimatorStateInfo(0);
-        if (s0.IsTag("Roll") || s1.IsTag("Roll")) return true;
-
-        bool nomeAtual =
-            s0.IsName("RollFront") || s0.IsName("RollBack") ||
-            s0.IsName("RollLeft") || s0.IsName("RollRight") ||
-            s0.IsName("Roll.RollFront") || s0.IsName("Roll.RollBack") ||
-            s0.IsName("Roll.RollLeft") || s0.IsName("Roll.RollRight");
-
-        bool nomeProx =
-            s1.IsName("RollFront") || s1.IsName("RollBack") ||
-            s1.IsName("RollLeft") || s1.IsName("RollRight") ||
-            s1.IsName("Roll.RollFront") || s1.IsName("Roll.RollBack") ||
-            s1.IsName("Roll.RollLeft") || s1.IsName("Roll.RollRight");
-
-        return nomeAtual || nomeProx;
-    }
-
-    private RollDir ClassificarDirecaoDeRoll(Vector3 direcaoMundo)
-    {
-        if (direcaoMundo.sqrMagnitude < 0.0001f) return RollDir.Front;
-        Vector3 local = transform.InverseTransformDirection(direcaoMundo).normalized;
+        if (worldDir.sqrMagnitude < 0.0001f) return RollDir.Front;
+        Vector3 local = transform.InverseTransformDirection(worldDir).normalized;
 
         if (Mathf.Abs(local.x) >= Mathf.Abs(local.z))
             return (local.x < 0f) ? RollDir.Left : RollDir.Right;
-        else
-            return (local.z < 0f) ? RollDir.Back : RollDir.Front;
+
+        return (local.z < 0f) ? RollDir.Back : RollDir.Front;
     }
 
+    /// <summary>Probe simples de chão com esfera.</summary>
     private bool ProbeGround()
     {
-        Bounds b = controlador.bounds;
+        Bounds b = cc.bounds;
         Vector3 foot = b.center + Vector3.down * (b.extents.y - groundProbeOffset);
         float r = Mathf.Max(0.01f, groundProbeRadius * Mathf.Max(0.5f, transform.lossyScale.y));
         return Physics.CheckSphere(foot, r, groundMask, QueryTriggerInteraction.Ignore);
-    }
-
-    public void OnEquip(UnityEngine.InputSystem.InputAction.CallbackContext ctx)
-    {
-        if (ctx.performed && sword != null)
-        {
-            sword.Toggle();
-        }
     }
 }
